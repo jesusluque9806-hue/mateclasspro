@@ -503,17 +503,16 @@ async function solveProblem(){
   const grade=state.level==='primaria'?'primaria (niños 6-12 años)':'secundaria (jóvenes 12-16 años)';
   showLoader(true);state.wrongAttempts=0;
 
-  const sys=`Eres MateClassPro, tutor inteligente de matemáticas para ${grade} en Colombia. Explica de forma muy clara y sencilla para niños/jóvenes.
-Responde SOLO JSON válido sin texto extra:
-{"concepto":"nombre","pasos":["paso 1","paso 2","paso 3"],"consejo":"truco fácil","video_titulo":"título del video","video_url":"https://www.youtube.com/results?search_query=TEMA+para+niños","practica_enunciado":"problema similar diferente","practica_respuesta":"respuesta exacta como número","respuesta_final":"respuesta completa con unidades"}`;
+  const prompt=`Eres tutor de matematicas para ${grade}. Responde SOLO JSON sin texto extra: {"concepto":"tema","pasos":["paso1","paso2","paso3"],"consejo":"truco","video_titulo":"video youtube","video_url":"https://youtube.com/results?search_query=matematicas+para+ninos","practica_enunciado":"problema similar","practica_respuesta":"solo el numero","respuesta_final":"respuesta completa"} Problema: ${prob}`;
 
   try{
     const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({contents:[{parts:[{text:sys+"\n\nProblema: "+prob}]}],generationConfig:{temperature:0.3}})
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.2,maxOutputTokens:800}})
     });
     const data=await res.json();
+    if(data.error){throw new Error(data.error.message);}
     const raw=data.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim();
     const d=JSON.parse(raw);
     state.practiceAnswer=(d.practica_respuesta||'').toString().trim().toLowerCase();
