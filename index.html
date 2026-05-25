@@ -361,20 +361,23 @@ function doLogin(){
   const name=document.getElementById('loginName').value.trim()||'Estudiante';
   const grade=document.getElementById('loginGrade').value;
   state.user={name,grade,role:selectedRole};
+  state.xp=state.xp||0;state.solved=state.solved||0;state.streak=state.streak||1;
   saveState(); initApp();
 }
 function quickLogin(){loadState();if(state.user){initApp();}else{doLogin();}}
 function logout(){state.user=null;saveState();document.getElementById('bottomNav').style.display='none';goScreen('login');}
 
 function initApp(){
-  document.getElementById('bottomNav').style.display='flex';
-  const u=state.user;
-  document.getElementById('heroGreet').textContent=`¡Hola, ${u.name}! 👋`;
-  document.getElementById('heroSub').textContent=`Grado: ${u.grade} · ¡A aprender!`;
-  document.getElementById('profileName').textContent=u.name;
-  document.getElementById('profileGrade').textContent=u.grade;
-  updateXP(); updateStats(); renderTopics(); renderVideos(); renderProgress(); renderTeacher();
-  goScreen(u.role==='teacher'?'teacher':'home');
+  try{
+    document.getElementById('bottomNav').style.display='flex';
+    const u=state.user;
+    document.getElementById('heroGreet').textContent='¡Hola, '+u.name+'! 👋';
+    document.getElementById('heroSub').textContent='Grado: '+u.grade+' · ¡A aprender!';
+    document.getElementById('profileName').textContent=u.name;
+    document.getElementById('profileGrade').textContent=u.grade;
+    updateXP(); updateStats(); renderTopics(); renderVideos(); renderProgress(); renderTeacher();
+    goScreen(u.role==='teacher'?'teacher':'home');
+  }catch(err){console.error('initApp error:',err);alert('Error al iniciar: '+err.message);}
 }
 
 function goScreen(id){
