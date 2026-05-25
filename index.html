@@ -471,15 +471,16 @@ async function handlePhoto(input){
     document.getElementById('problemInput').value='📷 Leyendo imagen...';
     showLoader(true);
     try{
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({contents:[{parts:[
+        body:JSON.stringify({contents:[{role:"user",parts:[
           {inline_data:{mime_type:file.type,data:b64}},
           {text:"Lee el problema matemático de esta imagen y escríbelo como texto. Solo el problema, sin explicación."}
         ]}]})
       });
       const data=await res.json();
+      if(data.error){throw new Error(JSON.stringify(data.error));}
       document.getElementById('problemInput').value=data.candidates[0].content.parts[0].text;
       showLoader(false);solveProblem();
     }catch(e){document.getElementById('problemInput').value='';showLoader(false);}
@@ -503,22 +504,22 @@ async function solveProblem(){
   const grade=state.level==='primaria'?'primaria (niños 6-12 años)':'secundaria (jóvenes 12-16 años)';
   showLoader(true);state.wrongAttempts=0;
 
-  const prompt=`Eres tutor de matematicas para ${grade}. Responde SOLO JSON sin texto extra: {"concepto":"tema","pasos":["paso1","paso2","paso3"],"consejo":"truco","video_titulo":"video youtube","video_url":"https://youtube.com/results?search_query=matematicas+para+ninos","practica_enunciado":"problema similar","practica_respuesta":"solo el numero","respuesta_final":"respuesta completa"} Problema: ${prob}`;
+  const prompt=`Eres tutor de matematicas para ${grade}. Responde SOLO JSON sin texto extra ni codigo markdown: {"concepto":"tema","pasos":["paso1","paso2","paso3"],"consejo":"truco","video_titulo":"video youtube","video_url":"https://www.youtube.com/results?search_query=matematicas+ninos","practica_enunciado":"problema similar","practica_respuesta":"solo el numero","respuesta_final":"respuesta completa"} Problema: ${prob}`;
 
   try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.2,maxOutputTokens:800}})
+      body:JSON.stringify({contents:[{role:"user",parts:[{text:prompt}]}],generationConfig:{temperature:0.2,maxOutputTokens:800,responseMimeType:"application/json"}})
     });
     const data=await res.json();
-    if(data.error){throw new Error(data.error.message);}
+    if(data.error){throw new Error(JSON.stringify(data.error));}
     const raw=data.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim();
     const d=JSON.parse(raw);
     state.practiceAnswer=(d.practica_respuesta||'').toString().trim().toLowerCase();
     state.finalAnswer=d.respuesta_final;
     showLoader(false);renderLesson(d);
-  }catch(e){showLoader(false);document.getElementById('lessonFlow').innerHTML=`<div style="padding:1rem;color:#991B1B;font-weight:700;">Error al procesar. Verifica tu API Key e intenta de nuevo.</div>`;document.getElementById('lessonFlow').classList.remove('hidden');}
+  }catch(e){showLoader(false);document.getElementById('lessonFlow').innerHTML=`<div style="padding:1rem;color:#991B1B;font-weight:700;">Error: ${e.message}<br><small>Abre la consola del navegador (F12) para más detalles.</small></div>`;document.getElementById('lessonFlow').classList.remove('hidden');console.error('Error completo:',e);}
 }
 
 function renderLesson(d){
@@ -586,8 +587,4 @@ function checkAns(){
 
 loadState();
 if(state.user){initApp();}
-else{document.getElementById('bottomNav').style.display='none';}
-renderVideos();
-</script>
-</body>
-</html>
+else{document.getElementById
