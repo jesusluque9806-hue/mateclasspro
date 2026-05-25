@@ -314,8 +314,8 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
 </div>
 
 <script>
-// ===== TU API KEY DE ANTHROPIC VA AQUÍ =====
-const ANTHROPIC_API_KEY = "TU_API_KEY_AQUI";
+// ===== API KEY DE GEMINI (GRATIS) =====
+const GEMINI_API_KEY = "AIzaSyBalmG-lx0-seizKNOagVstbBmqY9_1a_g";
 // ============================================
 
 let state = { user:null, role:'student', xp:0, streak:1, solved:0, level:'primaria', topicProgress:{}, currentTopic:'', practiceAnswer:'', finalAnswer:'', wrongAttempts:0 };
@@ -471,16 +471,16 @@ async function handlePhoto(input){
     document.getElementById('problemInput').value='📷 Leyendo imagen...';
     showLoader(true);
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-calls":"true"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:200,messages:[{role:"user",content:[
-          {type:"image",source:{type:"base64",media_type:file.type,data:b64}},
-          {type:"text",text:"Lee el problema matemático de esta imagen y escríbelo como texto. Solo el problema, sin explicación."}
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({contents:[{parts:[
+          {inline_data:{mime_type:file.type,data:b64}},
+          {text:"Lee el problema matemático de esta imagen y escríbelo como texto. Solo el problema, sin explicación."}
         ]}]})
       });
       const data=await res.json();
-      document.getElementById('problemInput').value=data.content[0].text;
+      document.getElementById('problemInput').value=data.candidates[0].content.parts[0].text;
       showLoader(false);solveProblem();
     }catch(e){document.getElementById('problemInput').value='';showLoader(false);}
   };
@@ -508,13 +508,13 @@ Responde SOLO JSON válido sin texto extra:
 {"concepto":"nombre","pasos":["paso 1","paso 2","paso 3"],"consejo":"truco fácil","video_titulo":"título del video","video_url":"https://www.youtube.com/results?search_query=TEMA+para+niños","practica_enunciado":"problema similar diferente","practica_respuesta":"respuesta exacta como número","respuesta_final":"respuesta completa con unidades"}`;
 
   try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
       method:"POST",
-      headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-calls":"true"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[{role:"user",content:`Problema: ${prob}`}]})
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({contents:[{parts:[{text:sys+"\n\nProblema: "+prob}]}],generationConfig:{temperature:0.3}})
     });
     const data=await res.json();
-    const raw=data.content[0].text.replace(/```json|```/g,'').trim();
+    const raw=data.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim();
     const d=JSON.parse(raw);
     state.practiceAnswer=(d.practica_respuesta||'').toString().trim().toLowerCase();
     state.finalAnswer=d.respuesta_final;
