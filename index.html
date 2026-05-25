@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MateClassPro - Tu profe de matemáticas</title>
-<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
@@ -194,8 +193,8 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
       <div class="login-card">
         <p style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">Soy...</p>
         <div class="role-selector">
-          <button class="role-btn active" onclick="selectRole('student',this)">🎒 Estudiante</button>
-          <button class="role-btn" onclick="selectRole('teacher',this)">👩‍🏫 Profesor/Padre</button>
+          <button class="role-btn active" onclick="window.selectRole('student',this)">🎒 Estudiante</button>
+          <button class="role-btn" onclick="window.selectRole('teacher',this)">👩‍🏫 Profesor/Padre</button>
         </div>
         <p class="field-label">Nombre</p>
         <input class="field-input" id="loginName" type="text" placeholder="Tu nombre">
@@ -204,8 +203,8 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
           <option>3ro Primaria</option><option>4to Primaria</option><option>5to Primaria</option>
           <option>6to Primaria</option><option>7mo Secundaria</option><option>8vo Secundaria</option><option>9no Secundaria</option>
         </select>
-        <button class="btn-login" onclick="doLogin()">🚀 ¡Comenzar a aprender!</button>
-        <p class="login-switch">¿Ya tienes cuenta? <span onclick="quickLogin()">Entrar rápido</span></p>
+        <button class="btn-login" onclick="window.doLogin()">🚀 ¡Comenzar a aprender!</button>
+        <p class="login-switch">¿Ya tienes cuenta? <span onclick="window.quickLogin()">Entrar rápido</span></p>
       </div>
     </div>
   </div>
@@ -215,7 +214,7 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
     <div class="hero">
       <div class="hero-top">
         <div class="logo">Mate<span>Class</span>Pro</div>
-        <button class="avatar-btn" onclick="goScreen('progress')"><i class="ti ti-user"></i></button>
+        <button class="avatar-btn" onclick="window.goScreen('progress')"><i class="ti ti-user"></i></button>
       </div>
       <h2 id="heroGreet">¡Hola! 👋</h2>
       <p id="heroSub">¿Qué aprendemos hoy?</p>
@@ -231,8 +230,8 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
     </div>
     <p class="sec-title"><i class="ti ti-list"></i> Nivel</p>
     <div class="level-tabs">
-      <button class="ltab active" onclick="setLevel('primaria',this)">Primaria</button>
-      <button class="ltab" onclick="setLevel('secundaria',this)">Secundaria</button>
+      <button class="ltab active" onclick="window.setLevel('primaria',this)">Primaria</button>
+      <button class="ltab" onclick="window.setLevel('secundaria',this)">Secundaria</button>
     </div>
     <div class="topics-grid" id="topicsGrid"></div>
   </div>
@@ -240,18 +239,18 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
   <!-- SOLVE -->
   <div class="screen" id="screen-solve">
     <div class="solve-header">
-      <button class="back-btn" onclick="goScreen('home')"><i class="ti ti-arrow-left"></i></button>
+      <button class="back-btn" onclick="window.goScreen('home')"><i class="ti ti-arrow-left"></i></button>
       <span class="solve-title" id="solveTitle">Resolviendo...</span>
     </div>
     <div class="input-card">
       <p class="input-label"><i class="ti ti-pencil"></i> Escribe tu problema</p>
       <textarea class="problem-input" id="problemInput" placeholder="Ej: ¿Cuánto es 3/4 + 1/2?"></textarea>
       <div class="input-actions">
-        <button class="btn-solve" onclick="solveProblem()"><i class="ti ti-sparkles"></i> ¡Resolver y aprender!</button>
-        <button class="btn-cam" onclick="openCamera()"><i class="ti ti-camera"></i></button>
+        <button class="btn-solve" onclick="window.solveProblem()"><i class="ti ti-sparkles"></i> ¡Resolver y aprender!</button>
+        <button class="btn-cam" onclick="window.openCamera()"><i class="ti ti-camera"></i></button>
       </div>
     </div>
-    <input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+    <input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="window.handlePhoto(this)">
     <div id="loaderWrap" class="loader-wrap hidden">
       <div class="loader-emoji">🤔</div>
       <p class="loader-text" id="loaderTxt">Analizando tu problema...</p>
@@ -280,7 +279,7 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
     <p class="sec-title"><i class="ti ti-chart-bar"></i> Mi progreso</p>
     <div class="progress-list" id="progressList"></div>
     <div style="padding:1rem 1.25rem;">
-      <button onclick="logout()" style="width:100%;background:#FEE2E2;color:#991B1B;border:none;border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">Cerrar sesión</button>
+      <button onclick="window.logout()" style="width:100%;background:#FEE2E2;color:#991B1B;border:none;border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">Cerrar sesión</button>
     </div>
   </div>
 
@@ -305,11 +304,11 @@ html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text)
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav" id="bottomNav">
-    <button class="nav-btn active" onclick="goScreen('home')" id="nav-home"><i class="ti ti-home"></i>Inicio</button>
-    <button class="nav-btn" onclick="goScreen('solve')" id="nav-solve"><i class="ti ti-math-symbols"></i>Resolver</button>
-    <button class="nav-btn" onclick="goScreen('videos')" id="nav-videos"><i class="ti ti-video"></i>Videos</button>
-    <button class="nav-btn" onclick="goScreen('progress')" id="nav-progress"><i class="ti ti-chart-bar"></i>Progreso</button>
-    <button class="nav-btn" onclick="goScreen('teacher')" id="nav-teacher"><i class="ti ti-chalkboard"></i>Profe</button>
+    <button class="nav-btn active" onclick="window.goScreen('home')" id="nav-home"><i class="ti ti-home"></i>Inicio</button>
+    <button class="nav-btn" onclick="window.goScreen('solve')" id="nav-solve"><i class="ti ti-math-symbols"></i>Resolver</button>
+    <button class="nav-btn" onclick="window.goScreen('videos')" id="nav-videos"><i class="ti ti-video"></i>Videos</button>
+    <button class="nav-btn" onclick="window.goScreen('progress')" id="nav-progress"><i class="ti ti-chart-bar"></i>Progreso</button>
+    <button class="nav-btn" onclick="window.goScreen('teacher')" id="nav-teacher"><i class="ti ti-chalkboard"></i>Profe</button>
   </nav>
 </div>
 
@@ -396,7 +395,7 @@ function setLevel(lvl,el){
 
 function renderTopics(){
   document.getElementById('topicsGrid').innerHTML=topics[state.level].map((t,i)=>`
-    <div class="topic-card ${t.color}" onclick="startTopic(${i})">
+    <div class="topic-card ${t.color}" onclick="window.startTopic(${i})">
       <div class="topic-emoji">${t.icon}</div>
       <p class="topic-name">${t.name}</p>
       <p class="topic-sub">${t.sub}</p>
@@ -548,8 +547,8 @@ function renderLesson(d){
     <div class="practice-card">
       <p class="practice-q">${d.practica_enunciado}</p>
       <div class="answer-row">
-        <input class="ans-input" type="text" id="ansInput" placeholder="Tu respuesta..." onkeydown="if(event.key==='Enter')checkAns()">
-        <button class="btn-check" onclick="checkAns()"><i class="ti ti-check"></i></button>
+        <input class="ans-input" type="text" id="ansInput" placeholder="Tu respuesta..." onkeydown="if(event.key==='Enter')window.checkAns()">
+        <button class="btn-check" onclick="window.checkAns()"><i class="ti ti-check"></i></button>
       </div>
       <div id="feedback"></div>
     </div>
@@ -590,4 +589,8 @@ function checkAns(){
 
 loadState();
 if(state.user){initApp();}
-else{document.getElementById
+else{document.getElementById('bottomNav').style.display='none';}
+renderVideos();
+</script>
+</body>
+</html>
