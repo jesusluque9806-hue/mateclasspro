@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MateClassPro - Tu profe de matemáticas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#6C3CE1;--primary-light:#8B5CF6;--primary-dark:#4C1D95;
+  --accent:#F59E0B;--accent2:#10B981;--accent3:#EF4444;
+  --bg:#F5F3FF;--card:#fff;--text:#1e1b4b;--muted:#6B7280;
+  --radius:16px;--radius-sm:10px;
+}
+html,body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);font-size:15px;}
+.app{max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:80px;position:relative;}
+
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid #e5e7eb;display:flex;z-index:100;padding:6px 0 10px;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-size:10px;font-family:'Nunito',sans-serif;color:#6B7280;font-weight:600;padding:4px 0;transition:color .2s;}
+.nav-btn i{font-size:22px;}
+.nav-btn.active{color:var(--primary);}
+
+.screen{display:none;animation:fadeIn .25s ease;}
+.screen.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);padding:1.5rem 1.25rem 2rem;border-radius:0 0 32px 32px;color:#fff;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.1);}
+.hero::after{content:'';position:absolute;bottom:-20px;left:30px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08);}
+.hero-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.logo{font-family:'Fredoka One',cursive;font-size:22px;letter-spacing:.5px;}
+.logo span{color:var(--accent);}
+.avatar-btn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:#fff;}
+.hero h2{font-size:18px;font-weight:800;margin-bottom:4px;position:relative;z-index:1;}
+.hero p{font-size:13px;opacity:.85;position:relative;z-index:1;}
+.xp-bar-wrap{margin-top:1rem;position:relative;z-index:1;}
+.xp-label{display:flex;justify-content:space-between;font-size:12px;opacity:.85;margin-bottom:5px;}
+.xp-bar{height:10px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;}
+.xp-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:1rem 1.25rem 0;}
+.stat-card{background:var(--card);border-radius:var(--radius-sm);padding:.75rem;text-align:center;box-shadow:0 2px 8px rgba(108,60,225,.08);}
+.stat-num{font-family:'Fredoka One',cursive;font-size:22px;color:var(--primary);}
+.stat-label{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;}
+
+.sec-title{font-size:15px;font-weight:800;color:var(--text);padding:.9rem 1.25rem .4rem;display:flex;align-items:center;gap:6px;}
+.sec-title i{color:var(--primary);font-size:18px;}
+
+.level-tabs{display:flex;gap:8px;padding:0 1.25rem .5rem;}
+.ltab{flex:1;padding:8px;border-radius:99px;border:2px solid #e5e7eb;background:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;color:var(--muted);}
+.ltab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.topics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 1.25rem;}
+.topic-card{background:var(--card);border-radius:var(--radius);padding:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(108,60,225,.08);border:2px solid transparent;transition:all .2s;position:relative;overflow:hidden;}
+.topic-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;border-radius:0 var(--radius) 0 60px;opacity:.08;}
+.topic-card.c1::before{background:#6C3CE1;}
+.topic-card.c2::before{background:#F59E0B;}
+.topic-card.c3::before{background:#10B981;}
+.topic-card.c4::before{background:#EF4444;}
+.topic-card.c5::before{background:#3B82F6;}
+.topic-card.c6::before{background:#EC4899;}
+.topic-card:hover,.topic-card.selected{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 6px 20px rgba(108,60,225,.18);}
+.topic-emoji{font-size:28px;margin-bottom:6px;}
+.topic-name{font-size:14px;font-weight:800;color:var(--text);}
+.topic-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.topic-progress{height:4px;background:#f3f4f6;border-radius:99px;margin-top:8px;overflow:hidden;}
+.topic-prog-fill{height:100%;background:var(--primary);border-radius:99px;}
+
+.solve-header{background:linear-gradient(135deg,var(--primary),var(--primary-light));padding:1rem 1.25rem;color:#fff;display:flex;align-items:center;gap:10px;}
+.back-btn{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:18px;}
+.solve-title{font-size:16px;font-weight:800;}
+
+.input-card{margin:1rem 1.25rem 0;background:var(--card);border-radius:var(--radius);padding:1rem;box-shadow:0 2px 8px rgba(108,60,225,.08);}
+.input-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.problem-input{width:100%;border:2px solid #e5e7eb;border-radius:var(--radius-sm);padding:10px 12px;font-size:15px;font-family:'Nunito',sans-serif;color:var(--text);background:#FAFAFA;resize:none;min-height:80px;transition:border-color .2s;outline:none;}
+.problem-input:focus{border-color:var(--primary);background:#fff;}
+.input-actions{display:flex;gap:8px;margin-top:10px;}
+.btn-solve{flex:1;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s;}
+.btn-solve:hover{transform:scale(1.02);}
+.btn-cam{background:#F5F3FF;border:2px solid var(--primary);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;color:var(--primary);font-size:18px;transition:all .2s;}
+.btn-cam:hover{background:var(--primary);color:#fff;}
+
+.lesson-flow{padding:1rem 1.25rem;display:flex;flex-direction:column;gap:12px;}
+.phase-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:700;}
+.phase-video{background:#FEF3C7;color:#92400E;}
+.phase-learn{background:#EDE9FE;color:#5B21B6;}
+.phase-practice{background:#D1FAE5;color:#065F46;}
+
+.lesson-card{background:var(--card);border-radius:var(--radius);box-shadow:0 2px 8px rgba(108,60,225,.08);overflow:hidden;}
+.lesson-card-head{padding:.75rem 1rem;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:8px;}
+.lesson-card-body{padding:1rem;}
+
+.step-row{display:flex;gap:10px;margin-bottom:10px;}
+.step-bubble{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-content{font-size:14px;color:var(--text);line-height:1.6;padding-top:3px;}
+
+.video-card{background:linear-gradient(135deg,#1e1b4b,#4C1D95);border-radius:var(--radius);padding:1rem;color:#fff;cursor:pointer;display:flex;align-items:center;gap:12px;transition:transform .2s;}
+.video-card:hover{transform:scale(1.02);}
+.video-play{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;color:#fff;}
+.video-info p{font-size:13px;font-weight:700;line-height:1.4;}
+.video-info span{font-size:11px;opacity:.7;}
+
+.practice-card{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid #86EFAC;border-radius:var(--radius);padding:1rem;}
+.practice-q{font-size:15px;font-weight:700;color:#064E3B;margin-bottom:12px;}
+.answer-row{display:flex;gap:8px;}
+.ans-input{flex:1;border:2px solid #86EFAC;border-radius:var(--radius-sm);padding:9px 12px;font-size:16px;font-family:'Nunito',sans-serif;font-weight:700;background:#fff;color:var(--text);outline:none;}
+.btn-check{background:var(--accent2);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 16px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+
+.feedback-ok{background:#DCFCE7;border:2px solid #86EFAC;border-radius:var(--radius-sm);padding:10px 14px;color:#065F46;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-top:8px;}
+.feedback-err{background:#FEE2E2;border:2px solid #FCA5A5;border-radius:var(--radius-sm);padding:10px 14px;color:#991B1B;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-top:8px;}
+
+.answer-reveal-card{background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:var(--radius);padding:1.25rem;color:#fff;text-align:center;}
+.answer-reveal-card .trophy{font-size:40px;margin-bottom:8px;}
+.answer-reveal-card h3{font-size:16px;font-weight:800;margin-bottom:6px;}
+.answer-reveal-card .the-answer{font-family:'Fredoka One',cursive;font-size:28px;color:var(--accent);margin:8px 0;}
+.xp-earned{background:rgba(255,255,255,.15);border-radius:99px;padding:4px 16px;font-size:13px;font-weight:700;display:inline-block;margin-top:6px;}
+
+.loader-wrap{padding:2rem 1.25rem;text-align:center;}
+.loader-emoji{font-size:48px;animation:bounce 1s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.loader-text{font-size:14px;color:var(--muted);font-weight:700;margin-top:10px;}
+.loader-prog{height:6px;background:#e5e7eb;border-radius:99px;margin:12px 0 0;overflow:hidden;}
+.loader-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:99px;transition:width .3s;}
+
+.profile-hero{background:linear-gradient(135deg,var(--primary),var(--primary-light));padding:1.5rem 1.25rem;color:#fff;border-radius:0 0 32px 32px;text-align:center;}
+.big-avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.6);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.profile-name{font-family:'Fredoka One',cursive;font-size:22px;}
+.badges-row{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.badge{background:rgba(255,255,255,.15);border-radius:99px;padding:5px 12px;font-size:12px;font-weight:700;}
+
+.progress-list{padding:.5rem 1.25rem;display:flex;flex-direction:column;gap:10px;}
+.prog-item{background:var(--card);border-radius:var(--radius-sm);padding:.85rem 1rem;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px rgba(108,60,225,.06);}
+.prog-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.prog-info{flex:1;}
+.prog-name{font-size:14px;font-weight:700;}
+.prog-bar{height:5px;background:#f3f4f6;border-radius:99px;margin-top:5px;overflow:hidden;}
+.prog-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--primary-light));}
+.prog-pct{font-size:13px;font-weight:800;color:var(--primary);}
+
+.videos-list{padding:.5rem 1.25rem;display:flex;flex-direction:column;gap:12px;}
+.vid-item{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 8px rgba(108,60,225,.08);cursor:pointer;transition:transform .2s;}
+.vid-item:hover{transform:translateY(-2px);}
+.vid-thumb{height:100px;background:linear-gradient(135deg,#1e1b4b,#6C3CE1);display:flex;align-items:center;justify-content:center;position:relative;}
+.vid-play-btn{width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;}
+.vid-level{position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;}
+.vid-info{padding:.75rem 1rem;}
+.vid-title{font-size:14px;font-weight:700;}
+.vid-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+.teacher-card{margin:0 1.25rem 12px;background:var(--card);border-radius:var(--radius);padding:1rem;box-shadow:0 2px 8px rgba(108,60,225,.08);}
+.teacher-card h3{font-size:15px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.student-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;}
+.student-row:last-child{border-bottom:none;}
+.s-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.s-info{flex:1;}
+.s-name{font-size:14px;font-weight:700;}
+.s-detail{font-size:12px;color:var(--muted);}
+.s-xp{font-family:'Fredoka One',cursive;font-size:16px;color:var(--primary);}
+
+.login-wrap{padding:2rem 1.25rem;text-align:center;}
+.login-logo{font-family:'Fredoka One',cursive;font-size:36px;color:var(--primary);margin-bottom:4px;}
+.login-logo span{color:var(--accent);}
+.login-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;}
+.login-card{background:var(--card);border-radius:var(--radius);padding:1.5rem;box-shadow:0 4px 20px rgba(108,60,225,.12);text-align:left;}
+.field-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px;margin-top:14px;}
+.field-input{width:100%;border:2px solid #e5e7eb;border-radius:var(--radius-sm);padding:11px 14px;font-size:15px;font-family:'Nunito',sans-serif;color:var(--text);outline:none;transition:border-color .2s;background:#FAFAFA;}
+.field-input:focus{border-color:var(--primary);background:#fff;}
+.role-selector{display:flex;gap:8px;margin-top:6px;}
+.role-btn{flex:1;padding:10px;border:2px solid #e5e7eb;border-radius:var(--radius-sm);background:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .2s;color:var(--muted);}
+.role-btn.active{border-color:var(--primary);background:#F5F3FF;color:var(--primary);}
+.btn-login{width:100%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius-sm);padding:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:1.25rem;}
+.login-switch{font-size:13px;color:var(--muted);margin-top:12px;text-align:center;}
+.login-switch span{color:var(--primary);font-weight:700;cursor:pointer;}
+.offline-banner{background:#FEF3C7;border-bottom:2px solid var(--accent);padding:6px 1.25rem;font-size:12px;font-weight:700;color:#92400E;display:none;align-items:center;gap:6px;}
+.hidden{display:none!important;}
+.mt1{margin-top:1rem;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <div class="offline-banner" id="offlineBanner">
+    <i class="ti ti-wifi-off"></i> Modo sin conexión — contenido guardado disponible
+  </div>
+
+  <!-- LOGIN -->
+  <div class="screen active" id="screen-login">
+    <div class="login-wrap">
+      <div class="login-logo">Mate<span>Class</span>Pro</div>
+      <p class="login-sub">Tu profe de matemáticas inteligente 🧮</p>
+      <div class="login-card">
+        <p style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">Soy...</p>
+        <div class="role-selector">
+          <button class="role-btn active" onclick="selectRole('student',this)">🎒 Estudiante</button>
+          <button class="role-btn" onclick="selectRole('teacher',this)">👩‍🏫 Profesor/Padre</button>
+        </div>
+        <p class="field-label">Nombre</p>
+        <input class="field-input" id="loginName" type="text" placeholder="Tu nombre">
+        <p class="field-label">Grado</p>
+        <select class="field-input" id="loginGrade">
+          <option>3ro Primaria</option><option>4to Primaria</option><option>5to Primaria</option>
+          <option>6to Primaria</option><option>7mo Secundaria</option><option>8vo Secundaria</option><option>9no Secundaria</option>
+        </select>
+        <button class="btn-login" onclick="doLogin()">🚀 ¡Comenzar a aprender!</button>
+        <p class="login-switch">¿Ya tienes cuenta? <span onclick="quickLogin()">Entrar rápido</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="screen-home">
+    <div class="hero">
+      <div class="hero-top">
+        <div class="logo">Mate<span>Class</span>Pro</div>
+        <button class="avatar-btn" onclick="goScreen('progress')"><i class="ti ti-user"></i></button>
+      </div>
+      <h2 id="heroGreet">¡Hola! 👋</h2>
+      <p id="heroSub">¿Qué aprendemos hoy?</p>
+      <div class="xp-bar-wrap">
+        <div class="xp-label"><span id="xpLabel">Nivel 1</span><span id="xpVal">0 / 100 XP</span></div>
+        <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="statStreak">1</div><div class="stat-label">🔥 Días</div></div>
+      <div class="stat-card"><div class="stat-num" id="statSolved">0</div><div class="stat-label">✅ Resueltos</div></div>
+      <div class="stat-card"><div class="stat-num" id="statXP">0</div><div class="stat-label">⭐ XP Total</div></div>
+    </div>
+    <p class="sec-title"><i class="ti ti-list"></i> Nivel</p>
+    <div class="level-tabs">
+      <button class="ltab active" onclick="setLevel('primaria',this)">Primaria</button>
+      <button class="ltab" onclick="setLevel('secundaria',this)">Secundaria</button>
+    </div>
+    <div class="topics-grid" id="topicsGrid"></div>
+  </div>
+
+  <!-- SOLVE -->
+  <div class="screen" id="screen-solve">
+    <div class="solve-header">
+      <button class="back-btn" onclick="goScreen('home')"><i class="ti ti-arrow-left"></i></button>
+      <span class="solve-title" id="solveTitle">Resolviendo...</span>
+    </div>
+    <div class="input-card">
+      <p class="input-label"><i class="ti ti-pencil"></i> Escribe tu problema</p>
+      <textarea class="problem-input" id="problemInput" placeholder="Ej: ¿Cuánto es 3/4 + 1/2?"></textarea>
+      <div class="input-actions">
+        <button class="btn-solve" onclick="solveProblem()"><i class="ti ti-sparkles"></i> ¡Resolver y aprender!</button>
+        <button class="btn-cam" onclick="openCamera()"><i class="ti ti-camera"></i></button>
+      </div>
+    </div>
+    <input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+    <div id="loaderWrap" class="loader-wrap hidden">
+      <div class="loader-emoji">🤔</div>
+      <p class="loader-text" id="loaderTxt">Analizando tu problema...</p>
+      <div class="loader-prog"><div class="loader-fill" id="loaderFill" style="width:0%"></div></div>
+    </div>
+    <div id="lessonFlow" class="lesson-flow hidden"></div>
+  </div>
+
+  <!-- VIDEOS -->
+  <div class="screen" id="screen-videos">
+    <div class="hero" style="border-radius:0 0 24px 24px;padding:1rem 1.25rem;">
+      <h2 style="font-size:18px;font-weight:800;">📹 Banco de Videos</h2>
+      <p style="font-size:13px;opacity:.85;margin-top:3px;">Aprende viendo, a tu ritmo</p>
+    </div>
+    <div class="videos-list" id="videosList"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="screen" id="screen-progress">
+    <div class="profile-hero">
+      <div class="big-avatar"><i class="ti ti-user"></i></div>
+      <p class="profile-name" id="profileName">Estudiante</p>
+      <p style="font-size:13px;opacity:.8;margin-top:2px;" id="profileGrade">Cargando...</p>
+      <div class="badges-row" id="badgesRow"></div>
+    </div>
+    <p class="sec-title"><i class="ti ti-chart-bar"></i> Mi progreso</p>
+    <div class="progress-list" id="progressList"></div>
+    <div style="padding:1rem 1.25rem;">
+      <button onclick="logout()" style="width:100%;background:#FEE2E2;color:#991B1B;border:none;border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <!-- TEACHER -->
+  <div class="screen" id="screen-teacher">
+    <div class="hero" style="border-radius:0 0 24px 24px;padding:1rem 1.25rem;">
+      <h2 style="font-size:18px;font-weight:800;">👩‍🏫 Panel del Profesor</h2>
+      <p style="font-size:13px;opacity:.85;margin-top:3px;">Seguimiento de tus estudiantes</p>
+    </div>
+    <div class="teacher-card mt1">
+      <h3><i class="ti ti-users"></i> Estudiantes activos</h3>
+      <div id="studentsList"></div>
+    </div>
+    <div class="teacher-card">
+      <h3><i class="ti ti-chart-pie"></i> Resumen del grupo</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+        <div class="stat-card"><div class="stat-num" id="tAvg">-</div><div class="stat-label">XP promedio</div></div>
+        <div class="stat-card"><div class="stat-num" id="tActive">-</div><div class="stat-label">Activos hoy</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-btn active" onclick="goScreen('home')" id="nav-home"><i class="ti ti-home"></i>Inicio</button>
+    <button class="nav-btn" onclick="goScreen('solve')" id="nav-solve"><i class="ti ti-math-symbols"></i>Resolver</button>
+    <button class="nav-btn" onclick="goScreen('videos')" id="nav-videos"><i class="ti ti-video"></i>Videos</button>
+    <button class="nav-btn" onclick="goScreen('progress')" id="nav-progress"><i class="ti ti-chart-bar"></i>Progreso</button>
+    <button class="nav-btn" onclick="goScreen('teacher')" id="nav-teacher"><i class="ti ti-chalkboard"></i>Profe</button>
+  </nav>
+</div>
+
+<script>
+// ===== TU API KEY DE ANTHROPIC VA AQUÍ =====
+const ANTHROPIC_API_KEY = "TU_API_KEY_AQUI";
+// ============================================
+
+let state = { user:null, role:'student', xp:0, streak:1, solved:0, level:'primaria', topicProgress:{}, currentTopic:'', practiceAnswer:'', finalAnswer:'', wrongAttempts:0 };
+
+function saveState(){try{localStorage.setItem('mcp_state',JSON.stringify(state));}catch(e){}}
+function loadState(){try{const s=localStorage.getItem('mcp_state');if(s)Object.assign(state,JSON.parse(s));}catch(e){}}
+
+window.addEventListener('offline',()=>document.getElementById('offlineBanner').style.display='flex');
+window.addEventListener('online',()=>document.getElementById('offlineBanner').style.display='none');
+
+const topics = {
+  primaria:[
+    {icon:'➕',name:'Suma y Resta',sub:'Enteros y decimales',color:'c1',prog:30,prompt:'suma y resta'},
+    {icon:'✖️',name:'Multiplicación',sub:'Tablas y productos',color:'c2',prog:55,prompt:'multiplicación'},
+    {icon:'➗',name:'División',sub:'Exacta y con residuo',color:'c3',prog:20,prompt:'división'},
+    {icon:'🍕',name:'Fracciones',sub:'Suma, resta, comparar',color:'c4',prog:10,prompt:'fracciones'},
+    {icon:'💯',name:'Decimales',sub:'Décimas y centésimas',color:'c5',prog:40,prompt:'decimales'},
+    {icon:'📐',name:'Geometría',sub:'Figuras y medidas',color:'c6',prog:5,prompt:'geometría básica'},
+  ],
+  secundaria:[
+    {icon:'🔣',name:'Álgebra',sub:'Ecuaciones y variables',color:'c1',prog:15,prompt:'álgebra ecuaciones'},
+    {icon:'📊',name:'Funciones',sub:'Gráficas y tablas',color:'c2',prog:0,prompt:'funciones lineales'},
+    {icon:'📐',name:'Geometría',sub:'Áreas y volúmenes',color:'c3',prog:25,prompt:'geometría áreas volúmenes'},
+    {icon:'💹',name:'Porcentajes',sub:'Regla de tres',color:'c4',prog:60,prompt:'porcentajes regla de tres'},
+    {icon:'🔢',name:'Aritmética',sub:'MCD, MCM, potencias',color:'c5',prog:35,prompt:'aritmética MCD MCM'},
+    {icon:'📈',name:'Estadística',sub:'Media, moda, mediana',color:'c6',prog:10,prompt:'estadística'},
+  ]
+};
+
+const videoBank = [
+  {title:'Cómo sumar fracciones fácil',sub:'Primaria · 5 min',level:'Primaria',url:'https://www.youtube.com/results?search_query=sumar+fracciones+para+niños',emoji:'🍕'},
+  {title:'Multiplicación método de la cruz',sub:'Primaria · 7 min',level:'Primaria',url:'https://www.youtube.com/results?search_query=multiplicación+niños',emoji:'✖️'},
+  {title:'Ecuaciones de primer grado',sub:'Secundaria · 10 min',level:'Secund.',url:'https://www.youtube.com/results?search_query=ecuaciones+primer+grado+secundaria',emoji:'🔣'},
+  {title:'Áreas y perímetros',sub:'Primaria · 6 min',level:'Primaria',url:'https://www.youtube.com/results?search_query=áreas+perímetros+niños',emoji:'📐'},
+  {title:'Porcentajes y regla de tres',sub:'Secundaria · 8 min',level:'Secund.',url:'https://www.youtube.com/results?search_query=porcentajes+regla+de+tres',emoji:'💹'},
+  {title:'División con residuo',sub:'Primaria · 5 min',level:'Primaria',url:'https://www.youtube.com/results?search_query=división+con+residuo+niños',emoji:'➗'},
+];
+
+let selectedRole='student';
+function selectRole(r,el){selectedRole=r;document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+
+function doLogin(){
+  const name=document.getElementById('loginName').value.trim()||'Estudiante';
+  const grade=document.getElementById('loginGrade').value;
+  state.user={name,grade,role:selectedRole};
+  saveState(); initApp();
+}
+function quickLogin(){loadState();if(state.user){initApp();}else{doLogin();}}
+function logout(){state.user=null;saveState();document.getElementById('bottomNav').style.display='none';goScreen('login');}
+
+function initApp(){
+  document.getElementById('bottomNav').style.display='flex';
+  const u=state.user;
+  document.getElementById('heroGreet').textContent=`¡Hola, ${u.name}! 👋`;
+  document.getElementById('heroSub').textContent=`Grado: ${u.grade} · ¡A aprender!`;
+  document.getElementById('profileName').textContent=u.name;
+  document.getElementById('profileGrade').textContent=u.grade;
+  updateXP(); updateStats(); renderTopics(); renderVideos(); renderProgress(); renderTeacher();
+  goScreen(u.role==='teacher'?'teacher':'home');
+}
+
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nav-'+id);if(nb)nb.classList.add('active');
+  if(id==='home')renderTopics();
+}
+
+function setLevel(lvl,el){
+  state.level=lvl;
+  document.querySelectorAll('.ltab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active'); renderTopics();
+}
+
+function renderTopics(){
+  document.getElementById('topicsGrid').innerHTML=topics[state.level].map((t,i)=>`
+    <div class="topic-card ${t.color}" onclick="startTopic(${i})">
+      <div class="topic-emoji">${t.icon}</div>
+      <p class="topic-name">${t.name}</p>
+      <p class="topic-sub">${t.sub}</p>
+      <div class="topic-progress"><div class="topic-prog-fill" style="width:${state.topicProgress[t.name]||t.prog}%"></div></div>
+    </div>`).join('');
+}
+
+function renderVideos(){
+  document.getElementById('videosList').innerHTML=videoBank.map(v=>`
+    <div class="vid-item" onclick="window.open('${v.url}','_blank')">
+      <div class="vid-thumb"><div class="vid-play-btn"><i class="ti ti-player-play"></i></div><span class="vid-level">${v.level}</span></div>
+      <div class="vid-info"><p class="vid-title">${v.emoji} ${v.title}</p><p class="vid-sub">${v.sub}</p></div>
+    </div>`).join('');
+}
+
+function renderProgress(){
+  const badges=[];
+  if(state.solved>=1)badges.push('🌟 Primeros pasos');
+  if(state.solved>=5)badges.push('🔥 En racha');
+  if(state.xp>=100)badges.push('💎 Nivel 2');
+  document.getElementById('badgesRow').innerHTML=badges.map(b=>`<div class="badge">${b}</div>`).join('')||'<div class="badge">🎯 Sin insignias aún</div>';
+  document.getElementById('progressList').innerHTML=topics[state.level].map(t=>{
+    const pct=state.topicProgress[t.name]||t.prog;
+    return`<div class="prog-item"><div class="prog-icon" style="background:#F5F3FF;">${t.icon}</div>
+      <div class="prog-info"><p class="prog-name">${t.name}</p>
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:${pct}%"></div></div></div>
+      <span class="prog-pct">${pct}%</span></div>`;}).join('');
+}
+
+function renderTeacher(){
+  const students=[{name:'Carlos M.',grade:'5to',xp:240,active:true},{name:'Valentina R.',grade:'4to',xp:180,active:true},{name:'Santiago G.',grade:'6to',xp:310,active:false},{name:'Mariana L.',grade:'5to',xp:95,active:true}];
+  const colors=['#6C3CE1','#F59E0B','#10B981','#EF4444'];
+  document.getElementById('studentsList').innerHTML=students.map((s,i)=>`
+    <div class="student-row">
+      <div class="s-avatar" style="background:${colors[i%4]}">${s.name.split(' ').map(w=>w[0]).join('')}</div>
+      <div class="s-info"><p class="s-name">${s.name}</p><p class="s-detail">${s.grade} · ${s.active?'🟢 Activo':'⚪ Inactivo'}</p></div>
+      <span class="s-xp">${s.xp} XP</span>
+    </div>`).join('');
+  document.getElementById('tAvg').textContent=Math.round(students.reduce((a,s)=>a+s.xp,0)/students.length);
+  document.getElementById('tActive').textContent=students.filter(s=>s.active).length;
+}
+
+function updateXP(){
+  const xp=state.xp;const lvl=Math.floor(xp/100)+1;
+  document.getElementById('xpLabel').textContent=`Nivel ${lvl}`;
+  document.getElementById('xpVal').textContent=`${xp%100} / 100 XP`;
+  document.getElementById('xpFill').style.width=(xp%100)+'%';
+}
+function updateStats(){
+  document.getElementById('statStreak').textContent=state.streak||1;
+  document.getElementById('statSolved').textContent=state.solved||0;
+  document.getElementById('statXP').textContent=state.xp||0;
+}
+
+function startTopic(i){
+  const t=topics[state.level][i];
+  state.currentTopic=t;
+  document.getElementById('solveTitle').textContent=`${t.icon} ${t.name}`;
+  document.getElementById('problemInput').value='';
+  document.getElementById('problemInput').placeholder=`Ej: problema de ${t.name.toLowerCase()}...`;
+  document.getElementById('lessonFlow').innerHTML='';
+  document.getElementById('lessonFlow').classList.add('hidden');
+  document.getElementById('loaderWrap').classList.add('hidden');
+  goScreen('solve');
+}
+
+function openCamera(){document.getElementById('camInput').click();}
+
+async function handlePhoto(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const b64=e.target.result.split(',')[1];
+    document.getElementById('problemInput').value='📷 Leyendo imagen...';
+    showLoader(true);
+    try{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-calls":"true"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:200,messages:[{role:"user",content:[
+          {type:"image",source:{type:"base64",media_type:file.type,data:b64}},
+          {type:"text",text:"Lee el problema matemático de esta imagen y escríbelo como texto. Solo el problema, sin explicación."}
+        ]}]})
+      });
+      const data=await res.json();
+      document.getElementById('problemInput').value=data.content[0].text;
+      showLoader(false);solveProblem();
+    }catch(e){document.getElementById('problemInput').value='';showLoader(false);}
+  };
+  reader.readAsDataURL(file);
+}
+
+let loaderTick;
+function showLoader(show){
+  const w=document.getElementById('loaderWrap');const fill=document.getElementById('loaderFill');const txt=document.getElementById('loaderTxt');
+  if(show){
+    w.classList.remove('hidden');document.getElementById('lessonFlow').classList.add('hidden');
+    let p=0;const msgs=['Analizando tu problema...','Preparando la explicación...','Creando ejercicios...','¡Casi listo!'];let mi=0;
+    loaderTick=setInterval(()=>{p=Math.min(p+2,90);fill.style.width=p+'%';if(p%30===0&&mi<msgs.length){txt.textContent=msgs[mi++];}},80);
+  }else{clearInterval(loaderTick);fill.style.width='100%';setTimeout(()=>{w.classList.add('hidden');},300);}
+}
+
+async function solveProblem(){
+  const prob=document.getElementById('problemInput').value.trim();
+  if(!prob)return;
+  const grade=state.level==='primaria'?'primaria (niños 6-12 años)':'secundaria (jóvenes 12-16 años)';
+  showLoader(true);state.wrongAttempts=0;
+
+  const sys=`Eres MateClassPro, tutor inteligente de matemáticas para ${grade} en Colombia. Explica de forma muy clara y sencilla para niños/jóvenes.
+Responde SOLO JSON válido sin texto extra:
+{"concepto":"nombre","pasos":["paso 1","paso 2","paso 3"],"consejo":"truco fácil","video_titulo":"título del video","video_url":"https://www.youtube.com/results?search_query=TEMA+para+niños","practica_enunciado":"problema similar diferente","practica_respuesta":"respuesta exacta como número","respuesta_final":"respuesta completa con unidades"}`;
+
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-calls":"true"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[{role:"user",content:`Problema: ${prob}`}]})
+    });
+    const data=await res.json();
+    const raw=data.content[0].text.replace(/```json|```/g,'').trim();
+    const d=JSON.parse(raw);
+    state.practiceAnswer=(d.practica_respuesta||'').toString().trim().toLowerCase();
+    state.finalAnswer=d.respuesta_final;
+    showLoader(false);renderLesson(d);
+  }catch(e){showLoader(false);document.getElementById('lessonFlow').innerHTML=`<div style="padding:1rem;color:#991B1B;font-weight:700;">Error al procesar. Verifica tu API Key e intenta de nuevo.</div>`;document.getElementById('lessonFlow').classList.remove('hidden');}
+}
+
+function renderLesson(d){
+  const flow=document.getElementById('lessonFlow');
+  const stepsHtml=d.pasos.map((s,i)=>`<div class="step-row"><div class="step-bubble">${i+1}</div><p class="step-content">${s}</p></div>`).join('');
+  flow.innerHTML=`
+    <span class="phase-badge phase-video">📹 Primero, mira esto</span>
+    <div class="video-card" onclick="window.open('${d.video_url}','_blank')">
+      <div class="video-play"><i class="ti ti-player-play"></i></div>
+      <div class="video-info"><p>${d.video_titulo}</p><span>Toca para buscar en YouTube ↗</span></div>
+    </div>
+    <span class="phase-badge phase-learn">📖 Ahora aprendamos</span>
+    <div class="lesson-card">
+      <div class="lesson-card-head"><i class="ti ti-bulb" style="color:var(--accent);font-size:18px;"></i><span style="font-size:14px;font-weight:800;">${d.concepto}</span></div>
+      <div class="lesson-card-body">
+        ${stepsHtml}
+        <div style="background:#FFFBEB;border-radius:var(--radius-sm);padding:10px 12px;margin-top:6px;border-left:3px solid var(--accent);">
+          <p style="font-size:13px;font-weight:700;color:#92400E;">💡 Truco: ${d.consejo}</p>
+        </div>
+      </div>
+    </div>
+    <span class="phase-badge phase-practice">✏️ ¡Practica tú!</span>
+    <div class="practice-card">
+      <p class="practice-q">${d.practica_enunciado}</p>
+      <div class="answer-row">
+        <input class="ans-input" type="text" id="ansInput" placeholder="Tu respuesta..." onkeydown="if(event.key==='Enter')checkAns()">
+        <button class="btn-check" onclick="checkAns()"><i class="ti ti-check"></i></button>
+      </div>
+      <div id="feedback"></div>
+    </div>
+    <div id="answerRevealWrap"></div>`;
+  flow.classList.remove('hidden');
+}
+
+function checkAns(){
+  const userAns=(document.getElementById('ansInput').value||'').trim().toLowerCase();
+  const correct=state.practiceAnswer;
+  const fb=document.getElementById('feedback');
+  if(!userAns)return;
+  const isOk=userAns===correct||userAns.replace(/\s/g,'')=== correct.replace(/\s/g,'')||(!isNaN(parseFloat(userAns))&&!isNaN(parseFloat(correct))&&Math.abs(parseFloat(userAns)-parseFloat(correct))<0.01);
+  if(isOk){
+    fb.innerHTML=`<div class="feedback-ok"><i class="ti ti-circle-check"></i> ¡Excelente! ¡Lo lograste! 🎉</div>`;
+    state.xp=(state.xp||0)+20;state.solved++;
+    if(state.currentTopic&&state.currentTopic.name){const cur=state.topicProgress[state.currentTopic.name]||state.currentTopic.prog||0;state.topicProgress[state.currentTopic.name]=Math.min(cur+10,100);}
+    saveState();updateXP();updateStats();
+    setTimeout(()=>{
+      document.getElementById('answerRevealWrap').innerHTML=`
+        <div class="answer-reveal-card">
+          <div class="trophy">🏆</div>
+          <h3>¡Aquí está la respuesta de tu tarea!</h3>
+          <p class="the-answer">${state.finalAnswer}</p>
+          <span class="xp-earned">+20 XP ganados ⭐</span>
+        </div>`;
+    },800);
+  }else{
+    state.wrongAttempts++;
+    if(state.wrongAttempts>=3){
+      fb.innerHTML=`<div class="feedback-err"><i class="ti ti-alert-circle"></i> La respuesta era: <b>${state.practiceAnswer}</b>. ¡Revisa los pasos!</div>`;
+      setTimeout(()=>{document.getElementById('answerRevealWrap').innerHTML=`<div class="answer-reveal-card"><div class="trophy">💪</div><h3>Sigue intentando, aquí la respuesta:</h3><p class="the-answer">${state.finalAnswer}</p></div>`;},1500);
+    }else{
+      fb.innerHTML=`<div class="feedback-err"><i class="ti ti-alert-circle"></i> Casi... Revisa los pasos e intenta otra vez. (Intento ${state.wrongAttempts}/3)</div>`;
+    }
+  }
+}
+
+loadState();
+if(state.user){initApp();}
+else{document.getElementById('bottomNav').style.display='none';}
+renderVideos();
+</script>
+</body>
+</html>
