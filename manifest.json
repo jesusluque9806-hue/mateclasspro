@@ -1,0 +1,25 @@
+{
+  "name": "MateClassPro",
+  "short_name": "MateClassPro",
+  "description": "Tu profe de matemáticas inteligente para primaria y secundaria",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F3FF",
+  "theme_color": "#6C3CE1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/6C3CE1/ffffff?text=MCP",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/6C3CE1/ffffff?text=MCP",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "es",
+  "scope": "/"
+}
