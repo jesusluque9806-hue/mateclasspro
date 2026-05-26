@@ -473,7 +473,7 @@ async function handlePhoto(input){
     document.getElementById('problemInput').value='📷 Leyendo imagen...';
     showLoader(true);
     try{
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({contents:[{role:"user",parts:[
@@ -509,7 +509,7 @@ async function solveProblem(){
   const prompt=`Eres tutor de matematicas para ${grade}. Responde SOLO JSON sin texto extra ni codigo markdown: {"concepto":"tema","pasos":["paso1","paso2","paso3"],"consejo":"truco","video_titulo":"video youtube","video_url":"https://www.youtube.com/results?search_query=matematicas+ninos","practica_enunciado":"problema similar","practica_respuesta":"solo el numero","respuesta_final":"respuesta completa"} Problema: ${prob}`;
 
   try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({contents:[{role:"user",parts:[{text:prompt}]}],generationConfig:{temperature:0.2,maxOutputTokens:800,responseMimeType:"application/json"}})
