@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#6C3CE1"/>
+  <text x="256" y="200" font-family="Arial Black, sans-serif" font-size="120" font-weight="900" text-anchor="middle" fill="white">M</text>
+  <text x="256" y="340" font-family="Arial Black, sans-serif" font-size="80" font-weight="700" text-anchor="middle" fill="#F59E0B">CLASS</text>
+  <text x="256" y="430" font-family="Arial, sans-serif" font-size="55" font-weight="700" text-anchor="middle" fill="rgba(255,255,255,0.8)">PRO</text>
+</svg>
