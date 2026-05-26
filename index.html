@@ -505,7 +505,7 @@ async function solveProblem(){
     const res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":"Bearer "+GROQ_API_KEY},
-      body:JSON.stringify({model:"llama3-8b-8192",messages:[{role:"user",content:prompt}],temperature:0.2,max_tokens:800})
+      body:JSON.stringify({model:"llama3-8b-819llama-3.3-70b-versatile",messages:[{role:"user",content:prompt}],temperature:0.2,max_tokens:800})
     });
     const data=await res.json();
     if(data.error){throw new Error(JSON.stringify(data.error));}
